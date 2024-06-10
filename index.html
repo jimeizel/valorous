@@ -36,8 +36,8 @@
               <button type="submit" class="btn btn-primary btn-sm">Compute</button>
               <button type="reset" class="btn btn-secondary btn-sm ml-2">Reset</button>
             </div>
-            <div id="total-points" class="text-center animate__animated animate__fadeInDown"></div> 
           </form>
+          <div id="total-points" class="text-center animate__animated animate__fadeInDown"></div> 
         </div>
       </div>
     </div>
@@ -69,17 +69,17 @@
     const rarePoints = parseInt(data.rare) * 10 || 0;
     const epicPoints = parseInt(data.epic) * 20 || 0;
     const legendaryPoints = parseInt(data.legendary) * 50 || 0;
-    const totalPoints = commonPoints + rarePoints + epicPoints + legendaryPoints;
+    const totalPoints = (commonPoints + rarePoints + epicPoints + legendaryPoints) * 2.692;
 
-    
-    document.getElementById('total-points').textContent = "Total Points: " + totalPoints;
+   
+    document.getElementById('total-points').textContent = "Total Points: " + totalPoints.toFixed(2);
     document.getElementById('total-points').style.display = 'block'; 
   });
 
   
   document.getElementById('rarity-form').addEventListener('reset', function(event) {
     document.getElementById('total-points').textContent = "";
-    document.getElementById('total-points').style.display = 'none';
+    document.getElementById('total-points').style.display = 'none'; 
   });
 </script>
 
