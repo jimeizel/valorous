@@ -22,24 +22,38 @@
     position: relative;
   }
   
+  body::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    filter: blur(10px) brightness(1.1);
+    z-index: -1;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.8);
+  }
+  
   .card {
     border-radius: 10px;
     animation: fadeInDown 1s ease-out;
     z-index: 1;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px); 
-    border: 1px solid rgba(255, 255, 255, 0.3); 
+    background: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Border to enhance glass effect */
   }
   
   h1 {
     font-size: 2rem;
     font-weight: bold;
     color: #343a40;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.8);
   }
   
   .form-group label {
     font-weight: bold;
-    color: #fff; 
+    color: #fff; /* Make label text white for better contrast */
   }
   
   .form-control {
@@ -51,22 +65,49 @@
   }
   
   #total-points {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: bold;
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.5); 
-    padding: 10px;
-    border-radius: 5px;
-    margin-top: 20px; 
-    display: none;
+    color: #007bff;
+    margin-top: 20px; /* Margin to create space within the form */
+  }
+  
+  .result-detail p {
+    font-size: 1.25rem;
+    color: #343a40;
+    margin: 10px 0;
   }
   
   .watermark {
     position: fixed;
     bottom: 10px;
     right: 10px;
-    font-size: 1rem; 
+    font-size: 1rem;
     font-weight: bold;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .modal-content {
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
+    backdrop-filter: blur(5px); /* Glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Border to enhance glass effect */
+  }
+  
+  .modal-header {
+    border-bottom: none; /* Remove default header border */
+  }
+  
+  .modal-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #343a40;
+  }
+  
+  .modal-footer {
+    border-top: none; /* Remove default footer border */
+  }
+  
+  .close {
+    color: #343a40;
   }
   
