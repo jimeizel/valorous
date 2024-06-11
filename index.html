@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stellar event</title>
+  <title>Stellar Event</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="epic.css">
 </head>
@@ -14,31 +14,51 @@
     <div class="col-md-6">
       <div class="card shadow">
         <div class="card-body">
-          <h1 class="text-center mb-4">Stellar event</h1>
-          <form id="rarity-form">
+          <h1 class="text-center mb-4">Stellar Event</h1>
+          <form id="treasure-form">
             <div class="form-group">
-              <label for="common">Common</label>
-              <input type="text" class="form-control" id="common" name="common">
+              <label for="blue-chest">Common</label>
+              <input type="text" class="form-control" id="blue-chest" name="blue-chest">
             </div>
             <div class="form-group">
-              <label for="rare">Rare</label>
-              <input type="text" class="form-control" id="rare" name="rare">
+              <label for="purple-chest">Rare</label>
+              <input type="text" class="form-control" id="purple-chest" name="purple-chest">
             </div>
             <div class="form-group">
-              <label for="epic">Epic</label>
-              <input type="text" class="form-control" id="epic" name="epic">
+              <label for="yellow-chest">Epic</label>
+              <input type="text" class="form-control" id="yellow-chest" name="yellow-chest">
             </div>
             <div class="form-group">
-              <label for="legendary">Legendary</label>
-              <input type="text" class="form-control" id="legendary" name="legendary">
+              <label for="red-chest">Legendary</label>
+              <input type="text" class="form-control" id="red-chest" name="red-chest">
             </div>
             <div class="form-group">
               <button type="submit" class="btn btn-primary btn-sm">Compute</button>
               <button type="reset" class="btn btn-secondary btn-sm ml-2">Reset</button>
             </div>
           </form>
-          <div id="total-points" class="text-center animate__animated animate__fadeInDown"></div> 
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="resultModalLabel">Stellar Event Result</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <div id="total-points" class="animate__animated animate__fadeInDown"></div> 
+        <div id="result-info" class="mt-3"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -47,41 +67,67 @@
 <div class="watermark">Code by Mopey</div>
 
 <script>
-  document.getElementById('rarity-form').addEventListener('submit', function(event) {
+  function calculateStellarPoints(event) {
     event.preventDefault();
+
     const formData = new FormData(event.target);
-    const data = Object.fromEntries(formData);
-    console.log('Form submitted with values:', data);
+    const chestData = Object.fromEntries(formData);
 
-    
-    const invalidInput = Object.keys(data).some(key => {
-      const value = data[key];
-      return value.trim() !== '' && isNaN(parseInt(value));
-    });
+    const stageThresholds = [40, 30, 30, 30];
+    const stagePoints = [2, 10, 20, 50];
 
-    if (invalidInput) {
-      document.getElementById('total-points').textContent = "Total Points: Please enter valid numbers";
-      document.getElementById('total-points').style.display = 'block'; 
-      return;
-    }
+    let chestCounts = [
+      parseInt(chestData['blue-chest']) || 0,
+      parseInt(chestData['purple-chest']) || 0,
+      parseInt(chestData['yellow-chest']) || 0,
+      parseInt(chestData['red-chest']) || 0
+    ];
 
-    const commonPoints = parseInt(data.common) * 2 || 0;
-    const rarePoints = parseInt(data.rare) * 10 || 0;
-    const epicPoints = parseInt(data.epic) * 20 || 0;
-    const legendaryPoints = parseInt(data.legendary) * 50 || 0;
-    const totalPoints = (commonPoints + rarePoints + epicPoints + legendaryPoints) * 2.692;
+    let totalPoints = 0;
+    let accumulatedPoints = 0;
 
    
-    document.getElementById('total-points').textContent = "Total Points: " + totalPoints.toFixed(2);
-    document.getElementById('total-points').style.display = 'block'; 
-  });
+    for (let stage = 0; stage < stageThresholds.length; stage++) {
+      totalPoints += chestCounts[stage] * stagePoints[stage];
+    }
 
-  
-  document.getElementById('rarity-form').addEventListener('reset', function(event) {
+   
+    while (totalPoints > 0) {
+      for (let stage = 0; stage < stageThresholds.length && totalPoints > 0; stage++) {
+        if (totalPoints >= stageThresholds[stage]) {
+          accumulatedPoints += stageThresholds[stage];
+          totalPoints = totalPoints - stageThresholds[stage] + stagePoints[stage];
+          chestCounts[stage]++;
+        } else {
+          accumulatedPoints += totalPoints;
+          totalPoints = 0;
+        }
+      }
+    }
+
+    document.getElementById('total-points').innerHTML = `<h4 class="text-primary">Total Points: ${accumulatedPoints}</h4>`;
+    document.getElementById('result-info').innerHTML = `
+      <div class="result-detail">
+        <p><span class="text-info">${chestCounts[0]}</span> Blue Treasure Chests</p>
+        <p><span class="text-info">${chestCounts[1]}</span> Purple Treasure Chests</p>
+        <p><span class="text-info">${chestCounts[2]}</span> Yellow Treasure Chests</p>
+        <p><span class="text-info">${chestCounts[3]}</span> Red Treasure Chests</p>
+      </div>`;
+
+    $('#resultModal').modal('show');
+  }
+
+  document.getElementById('treasure-form').addEventListener('submit', calculateStellarPoints);
+
+  document.getElementById('treasure-form').addEventListener('reset', function(event) {
     document.getElementById('total-points').textContent = "";
-    document.getElementById('total-points').style.display = 'none'; 
+    document.getElementById('result-info').innerHTML = "";
   });
 </script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>
